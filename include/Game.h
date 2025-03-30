@@ -18,6 +18,10 @@ public:
     ~Game();
     void ScoreUp(Paddle* p);
     void Draw();
+    void Input();
+    void Logic();
+    int topLimit();
+    int rightLimit();
 
 };
 #endif
