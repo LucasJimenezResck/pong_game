@@ -38,13 +38,22 @@ void Game::Draw()
     for(int i = 0; i < width + 2; i++)
         std::cout << "\xB2";
     std::cout << std::endl;
+    int xTop = (width/2);
+    int xBottom = -xTop;
+    if (width % 2 == 1)
+        xTop++;
+    int yTop = height/2;
+    int yBottom = -yTop;
+    if (height % 2 == 1)
+        yTop++;
+
     //TODO: fix i-values for uneven field heights: due to division of integers
     //when e.g. height=21 value is still set to 20
-    for(int i = -(height/2); i< (height/2); i++ )
+    for(int i = yBottom; i < yTop; i++ )
     {
-        for(int j = -(width/2); j < (width/2); j++)
+        for(int j = xBottom; j < xTop; j++)
         {
-            if(j == -(width/2))
+            if(j == xBottom)
                 std::cout << "\xB2";
 
             if(mBall->getCurrentX() == j && mBall->getCurrentY() == i)
@@ -58,7 +67,7 @@ void Game::Draw()
                 std::cout << " ";
 
             
-            if(j == (width/2) - 1)
+            if(j == xTop - 1)
                 std::cout << "\xB2";
 
         }

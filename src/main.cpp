@@ -36,7 +36,7 @@ int main(void)
     cout << Pl << endl;
 
 */
-    Game myGame(40, 21);
+    Game myGame(40, 20);
     myGame.Draw();
     return 0;
 }

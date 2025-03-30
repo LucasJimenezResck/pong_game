@@ -1,5 +1,5 @@
 #include "../include/paddle.h"
-
+#include "../include/GlobalDefs.h"
 class Paddle;
 
 Paddle::Paddle() : originalX(0), originalY(0), currentX(0),
