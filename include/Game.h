@@ -8,10 +8,16 @@ class Game
 private:
     int height, width;
     int score1, score2;
+    char up1, up2, down1, down2;
+    bool quit;
     Ball* mBall;
     Paddle* mPaddle1;
     Paddle* mPaddle2;
-
+public:
+    Game(int w, int h);
+    ~Game();
+    void ScoreUp(Paddle* p);
+    void Draw();
 
 };
 #endif

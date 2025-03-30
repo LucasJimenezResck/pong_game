@@ -4,19 +4,15 @@
 using namespace std;
 class Ball;
 
-Ball::Ball() : originalX(0), originalY(0), currentX(0),
-currentY(0), direction(STOP)
+Ball::Ball() : currentX(int(START_X_BALL)), currentY(int(START_Y_BALL)), direction(STOP)
 {}
 
-Ball::Ball(int posX, int posY) :  originalX(posX), originalY(posY), currentX(posX),
-currentY(posY), direction(STOP)
-{
-
-}
+Ball::Ball(int posX, int posY) : currentX(posX), currentY(posY), direction(STOP)
+{}
 void Ball::reset()
 {
-    currentX = originalX;
-    currentY = originalY;
+    currentX = (int) START_X_BALL;
+    currentY = (int) START_Y_BALL;
     direction = STOP;
 }
 

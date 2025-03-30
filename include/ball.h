@@ -1,13 +1,12 @@
 #ifndef ball_H
 #define ball_H
 #include <iostream>
-enum eDir {STOP = 0, NEAST, EAST, SEAST, SWEST, WEST, NWEST};
+#include "../include/GlobalDefs.h"
 
 class Ball
 {
 private:
     int currentX, currentY;
-    int originalX, originalY;
     eDir direction;
 public:
     Ball();
