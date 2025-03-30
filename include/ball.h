@@ -10,12 +10,14 @@ private:
     int originalX, originalY;
     eDir direction;
 public:
+    Ball();
     Ball(int posX, int posY);
     void reset();
     void changeDirection(eDir dir);
-    inline int getX();
-    inline int getY();
-    inline eDir getDirection();
+    int getCurrentX();
+    int getCurrentY();
+    eDir getDirection();
+    void randomDirection();
     void Move();
     friend std::ostream& operator<<(std::ostream & o, const Ball& c);
 

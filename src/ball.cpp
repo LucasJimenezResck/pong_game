@@ -1,7 +1,12 @@
 #include "../include/ball.h"
 #include <iostream>
+#include <stdlib.h>
 using namespace std;
 class Ball;
+
+Ball::Ball() : originalX(0), originalY(0), currentX(0),
+currentY(0), direction(STOP)
+{}
 
 Ball::Ball(int posX, int posY) :  originalX(posX), originalY(posY), currentX(posX),
 currentY(posY), direction(STOP)
@@ -20,8 +25,8 @@ void Ball::changeDirection(eDir dir)
     direction = dir;
 }
 
-int Ball::getX() {return currentX;}
-int Ball::getY() {return currentY;}
+int Ball::getCurrentX() {return currentX;}
+int Ball::getCurrentY() {return currentY;}
 eDir Ball::getDirection() {return direction;}
 
 void Ball::Move()
@@ -60,6 +65,10 @@ void Ball::Move()
 
 std::ostream& operator<<(std::ostream & o, const Ball& c)
 {
-    o << "Ball [" << c.currentX << ", " << c.currentY << "]" << endl;
+    o << "Ball [" << c.currentX << ", " << c.currentY << "][" << c.direction << "]" << endl;
     return o;
+}
+void Ball::randomDirection()
+{
+    direction = (eDir) ((rand() % 6) + 1);
 }
