@@ -1,6 +1,7 @@
 #include "../include/Game.h"
 #include <time.h>
 #include <conio.h>
+#include <windows.h>
 
 class Game;
 
@@ -11,8 +12,8 @@ down2('k'), score1(0), score2(0)
     mBall = new Ball;
     //Set starting positions for the Paddles, in case of uneven width paddle 2 needs to
     //be shifted one block to the right
-    int startX1 = (w / (-2)) + 1;
-    int startX2 = (-1 * startX1) - 1;
+    int startX1 = -3; //right calculation: (w / (-2)) + 1
+    int startX2 = 3; //right calculation: (-1 * startX1) - 1
     if(width % 2 == 1)
         startX2++;
     mPaddle1 = new Paddle(startX1, 0);
@@ -50,12 +51,28 @@ int Game::rightLimit()
     return (width / 2) + 1;   
 }
 
+void Game::clearScreen() // Use Direct implementation of "cls" to clear screen without flickering!
+	{
+		HANDLE hOut;
+		COORD Position;
+
+		hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+
+		Position.X = 0;
+		Position.Y = 0;
+		SetConsoleCursorPosition(hOut, Position);
+	}
+
+
 void Game::Draw()
 {
-    system("cls");
+    //system("cls");
+    clearScreen();
     //Drawing upper wall
+    char wall = '#'; //xB2
+    char paddle = '|'; //xDB
     for(int i = 0; i < width + 2; i++)
-        std::cout << "\xB2";
+        std::cout << wall;
     std::cout << std::endl;
 
     //Setting field's limits, for uneven sizes right shift is needed
@@ -65,14 +82,15 @@ void Game::Draw()
     int yTop = topLimit();
     int yBottom = -(height / 2);
 
+
     //Iterate through all the field, filling with correspondent values
-    for(int i = yBottom; i < yTop; i++ )
+    for(int i = yTop; i > yBottom; i-- )
     {
         for(int j = xBottom; j < xTop; j++)
         {
             //Draws left wall
             if(j == xBottom)
-                std::cout << "\xB2";
+                std::cout << wall;
 
             //Draws the ball
             if(mBall->getCurrentX() == j && mBall->getCurrentY() == i)
@@ -80,31 +98,33 @@ void Game::Draw()
 
             //Draws both players with a length of three pieces    
             else if(mPaddle1->getCurrentX() == j && mPaddle1->getCurrentY() == i)
-                std::cout << "\xDB";
+                std::cout << paddle;
             else if(mPaddle2->getCurrentX() == j && mPaddle2->getCurrentY() == i)
-                std::cout << "\xDB";
+                std::cout << paddle;
             else if(mPaddle1->getCurrentX() == j && mPaddle1->getCurrentY() + 1 == i)
-                std::cout << "\xDB";
+                std::cout << paddle;
             else if(mPaddle2->getCurrentX() == j && mPaddle2->getCurrentY() + 1 == i)
-                std::cout << "\xDB";
+                std::cout << paddle;
             else if(mPaddle1->getCurrentX() == j && mPaddle1->getCurrentY() -1 == i)
-                std::cout << "\xDB";
+                std::cout << paddle;
             else if(mPaddle2->getCurrentX() == j && mPaddle2->getCurrentY() -1 == i)
-                std::cout << "\xDB";
+                std::cout << paddle;
 
             else   
                 std::cout << " ";
 
             //Draws right wall
             if(j == xTop - 1)
-                std::cout << "\xB2";
+                std::cout << wall;
 
         }
         std::cout << std::endl;
     }
     //Draws bottom wall
     for(int i = 0; i < width + 2; i++)
-        std::cout << "\xB2";
+        std::cout << wall;
+    std::cout << std::endl;
+    std::cout << score1 << " - " << score2;
     
 }
 
@@ -115,38 +135,61 @@ void Game::Input()
     {
         char current = _getch(); //get current char pressed
         //Check if both characters can move up
-        if(current == up1 && mPaddle1->getCurrentY() < ((height+1) / 2))
+        if(current == up1 && mPaddle1->getCurrentY() < topLimit() - 1)
             mPaddle1->moveUp();
-        if(current == up2 && mPaddle2->getCurrentY() < ((height+1) / 2))
-            mPaddle1->moveUp();
+        if(current == up2 && mPaddle2->getCurrentY() < topLimit() - 1)
+            mPaddle2->moveUp();
         //Check if both characters can move down
-        if(current == down1 && mPaddle1->getCurrentY() > ((height-1) / 2))
+        int yBottom = -(height / 2);
+        if(current == down1 && mPaddle1->getCurrentY() > yBottom + 1)
             mPaddle1->moveDown();
-        if(current == down2 && mPaddle2->getCurrentY() > ((height-1) / 2))
-            mPaddle1->moveDown();
+        if(current == down2 && mPaddle2->getCurrentY() > yBottom + 1)
+            mPaddle2->moveDown();
         //If the ball isn't moving, press any key to start
         if(mBall->getDirection() == STOP)
             mBall->randomDirection();
         //Quit the game if somebody presses q
         if(current == 'q')
-            quit == true;
+            quit = true;
     }
 }
 
 void Game::Logic()
 {
-    for(int i = -1; i < 2; i++)
+    int ballx = mBall->getCurrentX();
+    int player1x = mBall->getCurrentX();
+    //TODO: solve bounce problem with paddles
+
+    if(ballx == player1x + 1)
+        if (mBall->getCurrentY() == mPaddle1->getCurrentY())
+            mBall->changeDirection(EAST);
+
+    if(mBall->getCurrentY() == topLimit())
     {
-        if(mBall->getCurrentX() == mPaddle1->getCurrentX() + 1 && 
-        mBall->getCurrentY() == mPaddle1->getCurrentY() + i)
-        {
-            mBall->changeDirection((eDir)((rand() % 3) + 4));
-        }
-        if(mBall->getCurrentX() == mPaddle2->getCurrentX() - 1 && 
-        mBall->getCurrentY() == mPaddle2->getCurrentY() + i)
-        {
-            mBall->changeDirection((eDir)((rand() % 3) + 1));
-        }  
+        eDir current_dir = mBall->getDirection() == NEAST ? SEAST : SWEST;
+        mBall->changeDirection(current_dir);
     }
-    if(mBall->getCurrentY() == topLimit() - 1){}
+    if(mBall->getCurrentY() == -(height/2))
+    {
+        eDir current_dir = mBall->getDirection() == SEAST ? NEAST : NWEST;
+        mBall->changeDirection(current_dir);
+    }
+    if(mBall->getCurrentX() == rightLimit() + 1)
+    {
+        ScoreUp(mPaddle1);
+    }
+    if(mBall->getCurrentX() == -(width/2) - 1)
+    {
+        ScoreUp(mPaddle2);
+    }
+}
+
+void Game::Run()
+{
+    while(!quit)
+    {
+        Draw();
+        Input();
+        Logic();
+    }
 }

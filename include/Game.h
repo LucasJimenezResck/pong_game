@@ -22,6 +22,8 @@ public:
     void Logic();
     int topLimit();
     int rightLimit();
+    void Run();
+    void clearScreen();
 
 };
 #endif

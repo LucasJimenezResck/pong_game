@@ -37,7 +37,7 @@ int main(void)
 
 */
     Game myGame(40, 20);
-    myGame.Draw();
+    myGame.Run();
 
     return 0;
 }
