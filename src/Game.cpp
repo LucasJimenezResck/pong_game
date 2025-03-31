@@ -12,8 +12,8 @@ down2('k'), score1(0), score2(0)
     mBall = new Ball;
     //Set starting positions for the Paddles, in case of uneven width paddle 2 needs to
     //be shifted one block to the right
-    int startX1 = -3; //right calculation: (w / (-2)) + 1
-    int startX2 = 3; //right calculation: (-1 * startX1) - 1
+    int startX1 = (w / (-2)) + 1; //right calculation: 
+    int startX2 = (-1 * startX1) - 1; //right calculation: 
     if(width % 2 == 1)
         startX2++;
     mPaddle1 = new Paddle(startX1, 0);
@@ -69,8 +69,8 @@ void Game::Draw()
     //system("cls");
     clearScreen();
     //Drawing upper wall
-    char wall = '#'; //xB2
-    char paddle = '|'; //xDB
+    char wall = '#'; //xB2 for character use other than ASCII
+    char paddle = '|'; //xDB for character use other than ASCII
     for(int i = 0; i < width + 2; i++)
         std::cout << wall;
     std::cout << std::endl;
@@ -141,9 +141,9 @@ void Game::Input()
             mPaddle2->moveUp();
         //Check if both characters can move down
         int yBottom = -(height / 2);
-        if(current == down1 && mPaddle1->getCurrentY() > yBottom + 1)
+        if(current == down1 && mPaddle1->getCurrentY() > yBottom + 2)
             mPaddle1->moveDown();
-        if(current == down2 && mPaddle2->getCurrentY() > yBottom + 1)
+        if(current == down2 && mPaddle2->getCurrentY() > yBottom + 2)
             mPaddle2->moveDown();
         //If the ball isn't moving, press any key to start
         if(mBall->getDirection() == STOP)
@@ -158,11 +158,28 @@ void Game::Logic()
 {
     int ballx = mBall->getCurrentX();
     int player1x = mBall->getCurrentX();
+    int player1y = mBall->getCurrentY();
     //TODO: solve bounce problem with paddles
 
-    if(ballx == player1x + 1)
-        if (mBall->getCurrentY() == mPaddle1->getCurrentY())
-            mBall->changeDirection(EAST);
+    if(ballx == mPaddle1->getCurrentX() + 1)
+    {
+        if ((mBall->getCurrentY() == mPaddle1->getCurrentY()) || 
+        (mBall->getCurrentY() == (mPaddle1->getCurrentY()+1)) || 
+        (mBall->getCurrentY() == (mPaddle1->getCurrentY()-1)))
+        {
+            mBall->changeDirection((eDir)((rand() % 3) + 1));
+        }
+    }
+
+    if(ballx == mPaddle2->getCurrentX() - 1)
+    {
+        if ((mBall->getCurrentY() == mPaddle2->getCurrentY()) || 
+        (mBall->getCurrentY() == (mPaddle2->getCurrentY()+1)) || 
+        (mBall->getCurrentY() == (mPaddle2->getCurrentY()-1)))
+        {
+            mBall->changeDirection((eDir)((rand() % 3) + 4));
+        }
+    }
 
     if(mBall->getCurrentY() == topLimit())
     {
